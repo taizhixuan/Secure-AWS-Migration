@@ -1,0 +1,53 @@
+# ---- Terraform ----
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+!*.tfvars.example
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+tfplan
+*.tfplan
+
+# ---- Secrets / certs / keys (NEVER commit) ----
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+.env
+.env.*
+!.env.example
+aws-credentials*
+*secret*.tfvars
+
+# ---- PHP / app ----
+vendor/
+composer.lock
+
+# ---- Node (diagram tooling) ----
+node_modules/
+package-lock.json
+
+# ---- Python ----
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ---- OS / editor junk ----
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+.serena/
+*.swp
+*~

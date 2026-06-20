@@ -1,0 +1,145 @@
+/* MMU Student Information System — "Modern Academic Admin" design system
+   Navy + gold · Fraunces (display) + Outfit (UI) · warm paper · sidebar layout */
+
+:root{
+  --ink:#0f1f33;        /* deep navy */
+  --ink-2:#16304d;
+  --paper:#f4f2ea;      /* warm paper */
+  --card:#ffffff;
+  --line:#e8e3d6;       /* warm border */
+  --line-2:#eef0f3;
+  --text:#1f2a38;
+  --muted:#6b7785;
+  --gold:#b6862c;
+  --gold-deep:#946a1f;
+  --gold-soft:#f4e8cb;
+  --green:#2f7d54;
+  --green-soft:#e9f4ee;
+  --red:#c0392b;
+  --red-soft:#fbecea;
+  --blue-soft:#e8eef7;
+  --blue-ink:#2c4a6e;
+  --shadow:0 1px 2px rgba(15,31,51,.04), 0 10px 30px rgba(15,31,51,.07);
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:'Outfit',system-ui,Segoe UI,sans-serif;background:var(--paper);color:var(--text);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1,h2,h3{font-family:'Fraunces','Georgia',serif;font-weight:600;letter-spacing:-.012em;color:var(--ink);margin:0 0 .4em}
+a{color:var(--gold-deep);text-decoration:none}
+code{background:#f0ece0;padding:1px 6px;border-radius:5px;font-size:.88em}
+
+/* ---------------- App layout (sidebar) ---------------- */
+.app{display:grid;grid-template-columns:266px 1fr;min-height:100vh}
+.sidebar{background:linear-gradient(180deg,var(--ink),#0b1828);color:#cdd8e6;display:flex;flex-direction:column;padding:22px 16px;position:sticky;top:0;height:100vh}
+.brand{display:flex;gap:12px;align-items:center;padding:4px 8px 20px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:16px}
+.brand-mark{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--gold),#7d5a16);display:grid;place-items:center;color:#fff;font-family:'Fraunces',serif;font-weight:700;font-size:21px;box-shadow:0 8px 18px rgba(182,134,44,.4);flex:none}
+.brand-text{display:flex;flex-direction:column;line-height:1.18;min-width:0}
+.brand-text strong{font-family:'Fraunces',serif;color:#fff;font-size:18px}
+.brand-text span{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#8aa0b8}
+.nav{display:flex;flex-direction:column;gap:4px}
+.nav a{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:10px;color:#b6c4d6;font-weight:500;font-size:14.5px;transition:background .15s,color .15s,box-shadow .15s;animation:slidein .5s both}
+.nav a svg{width:18px;height:18px;opacity:.85;flex:none}
+.nav a span{white-space:nowrap}
+.nav a:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav a.active{background:linear-gradient(100deg,rgba(182,134,44,.26),rgba(182,134,44,.06));color:#fff;box-shadow:inset 3px 0 0 var(--gold)}
+.nav a.active svg{opacity:1;color:#e7c476}
+.nav a:nth-child(1){animation-delay:.05s}.nav a:nth-child(2){animation-delay:.1s}.nav a:nth-child(3){animation-delay:.15s}.nav a:nth-child(4){animation-delay:.2s}
+@keyframes slidein{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+.nav-section{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#6f8298;margin:18px 13px 8px}
+.sidebar-foot{margin-top:auto;border-top:1px solid rgba(255,255,255,.08);padding-top:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.user{display:flex;align-items:center;gap:10px;min-width:0}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--gold-soft);color:var(--ink);display:grid;place-items:center;font-weight:700;font-family:'Fraunces',serif;flex:none}
+.user .uname{font-size:13.5px;color:#e6edf5;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user .urole{font-size:11px;color:#8aa0b8}
+.logout{color:#8aa0b8;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.logout:hover{color:#fff}.logout svg{width:16px;height:16px}
+
+/* ---------------- Main area ---------------- */
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{padding:28px 40px 4px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+.topbar .page-title{font-size:31px;margin:0;line-height:1.1}
+.topbar .crumb{font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.content{padding:20px 40px 48px;max-width:1100px;width:100%;animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* ---------------- Cards ---------------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow);margin-bottom:20px}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.card-head h2,.card-head h3{margin:0}
+
+/* stat cards */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-bottom:22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.stat::after{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(var(--gold),var(--gold-deep))}
+.stat .label{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.stat .value{font-family:'Fraunces',serif;font-size:40px;font-weight:600;color:var(--ink);line-height:1.05;margin-top:8px}
+.stat .ic{position:absolute;right:16px;top:16px;width:40px;height:40px;border-radius:11px;background:var(--gold-soft);color:var(--gold-deep);display:grid;place-items:center}
+.stat .ic svg{width:20px;height:20px}
+
+/* ---------------- Tables ---------------- */
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table{width:100%;border-collapse:collapse}
+th,td{padding:13px 16px;text-align:left}
+th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:#faf7ef;border-bottom:1px solid var(--line);font-weight:600}
+td{border-bottom:1px solid var(--line-2);font-size:14.5px}
+tbody tr:last-child td{border-bottom:0}
+tbody tr{transition:background .12s}
+tbody tr:hover{background:#fbf8f1}
+.id-cell{font-family:'Fraunces',serif;font-weight:600;color:var(--ink)}
+
+/* badges */
+.badge{display:inline-block;padding:3px 11px;border-radius:999px;font-size:12px;font-weight:600;background:var(--gold-soft);color:var(--gold-deep)}
+.badge.year{background:var(--blue-soft);color:var(--blue-ink)}
+
+/* ---------------- Buttons ---------------- */
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border:1px solid var(--ink);border-radius:10px;padding:10px 16px;font:inherit;font-weight:600;font-size:14px;cursor:pointer;transition:transform .15s,box-shadow .15s,background .15s,color .15s,border-color .15s;text-decoration:none;white-space:nowrap}
+.btn svg{width:16px;height:16px}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 20px rgba(15,31,51,.16)}
+.btn:active{transform:translateY(0)}
+.btn.primary{background:linear-gradient(120deg,var(--gold),var(--gold-deep));border-color:var(--gold-deep)}
+.btn.primary:hover{box-shadow:0 10px 22px rgba(182,134,44,.42)}
+.btn.alt{background:#fff;color:var(--ink);border-color:var(--line)}
+.btn.alt:hover{border-color:var(--ink)}
+.btn.danger{background:#fff;color:var(--red);border-color:#eecfca}
+.btn.danger:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.btn.sm{padding:7px 12px;font-size:13px;border-radius:9px}
+
+/* ---------------- Forms ---------------- */
+label{display:block;margin:15px 0 6px;font-size:13px;font-weight:600;color:var(--ink)}
+input,select{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:14.5px;background:#fff;color:var(--text);transition:border-color .15s,box-shadow .15s}
+input::placeholder{color:#9aa6b2}
+input:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px var(--gold-soft)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted);font-size:13.5px}
+.empty{text-align:center;color:var(--muted);padding:34px 10px}
+
+/* flash + alerts */
+.flash{display:flex;align-items:center;gap:10px;background:var(--green-soft);border:1px solid #cfe9da;color:#1f6b45;padding:12px 16px;border-radius:11px;margin-bottom:18px;font-size:14px;animation:rise .4s both}
+.flash svg,.error svg{width:18px;height:18px;flex:none}
+.error{display:flex;align-items:center;gap:9px;background:var(--red-soft);border:1px solid #f3cfc9;color:#a93226;padding:11px 14px;border-radius:10px;margin-bottom:14px;font-size:14px}
+
+/* ---------------- Auth (login) ---------------- */
+.auth{min-height:100vh;display:grid;place-items:center;position:relative;overflow:hidden;
+  background:
+   radial-gradient(900px 520px at 82% -12%, rgba(182,134,44,.22), transparent 60%),
+   radial-gradient(760px 520px at -8% 112%, rgba(40,74,110,.4), transparent 55%),
+   linear-gradient(180deg,#0f1f33,#0a1626)}
+.auth::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px);background-size:24px 24px;opacity:.55}
+.auth-card{position:relative;width:392px;max-width:92vw;background:rgba(255,255,255,.98);border-radius:18px;padding:36px 34px;box-shadow:0 40px 90px rgba(0,0,0,.45);animation:rise .55s both}
+.auth-brand{display:flex;align-items:center;gap:13px;margin-bottom:24px}
+.auth-brand .brand-text strong{color:var(--ink);font-family:'Fraunces',serif;font-size:18px}
+.auth-brand .brand-text span{color:var(--muted);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase}
+.auth-card h2{font-size:26px;margin:.1em 0 .15em}
+.auth-card .sub{color:var(--muted);font-size:13.5px;margin:0 0 4px}
+.auth-card .btn{width:100%;justify-content:center;margin-top:20px;padding:12px}
+
+/* ---------------- Responsive ---------------- */
+@media(max-width:860px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:static;height:auto}
+  .nav{flex-direction:row;flex-wrap:wrap}
+  .nav-section,.sidebar-foot{display:none}
+  .topbar,.content{padding-left:20px;padding-right:20px}
+  .topbar .page-title{font-size:26px}
+}

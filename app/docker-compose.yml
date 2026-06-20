@@ -1,0 +1,38 @@
+# LOCAL development / testing only.
+# Production runs the same image on Amazon ECS Fargate with Amazon RDS for MySQL.
+#
+#   docker compose up --build      then browse to http://localhost:8080
+#   Login with the default admin documented in README.md.
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpw
+      MYSQL_DATABASE: sis
+      MYSQL_USER: sis_app
+      MYSQL_PASSWORD: sis_app_pw
+    # DB port is intentionally NOT published to the host: the app reaches MySQL
+    # over the internal Compose network. To inspect it run:
+    #   docker compose exec db mysql -uroot -prootpw sis
+    volumes:
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-prootpw"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build: .
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: sis
+      DB_USER: sis_app
+      DB_PASS: sis_app_pw
+      APP_ENV: local
+    ports:
+      - "8080:80"
+    depends_on:
+      db:
+        condition: service_healthy

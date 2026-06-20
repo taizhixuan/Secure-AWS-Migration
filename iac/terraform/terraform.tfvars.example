@@ -1,0 +1,39 @@
+# Copy to terraform.tfvars and adjust. terraform.tfvars is git-ignored.
+
+project     = "mmu-sis"
+environment = "prod"
+aws_region  = "ap-southeast-1"
+
+# Networking
+vpc_cidr    = "10.20.0.0/16"
+az_count    = 2
+enable_ipv6 = false # set true for the IPv6 bonus
+# Restrict to your own IP for a tighter demo, e.g. "203.0.113.10/32"
+admin_cidr = "0.0.0.0/0"
+
+# Database (Multi-AZ, encrypted)
+db_name                = "sis"
+db_username            = "sis_admin"
+db_instance_class      = "db.t3.micro"
+db_multi_az            = true
+db_deletion_protection = false # set true for production
+backup_retention_days  = 7
+
+# Application
+# Leave app_image empty for the first apply; it defaults to <ecr-repo>:latest.
+app_image         = ""
+app_desired_count = 2
+task_cpu          = "256"
+task_memory       = "512"
+
+# TLS: leave certificate_arn empty to auto-generate a self-signed cert (HTTPS
+# works immediately; browsers warn about the name). Provide an ACM ARN for a
+# trusted certificate.
+certificate_arn         = ""
+enable_self_signed_cert = true
+
+# Monitoring / bonus
+log_retention_days = 90
+waf_rate_limit     = 2000
+alarm_email        = "" # e.g. "taizhixuan@gmail.com" to receive security alarms
+enable_inspector   = false # set true for the Amazon Inspector bonus (may incur cost)

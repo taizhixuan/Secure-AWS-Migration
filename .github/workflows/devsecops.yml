@@ -1,0 +1,111 @@
+name: DevSecOps CI
+
+# Lints code, validates and security-scans the IaC, and builds + scans the
+# container image on every push / PR. A gated deploy job (disabled by default)
+# shows how to push to ECR and roll the ECS service via GitHub OIDC.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  php-lint:
+    name: PHP lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+      - name: Lint all PHP files
+        run: |
+          find app -name '*.php' -print0 | xargs -0 -n1 php -l
+
+  terraform:
+    name: Terraform validate
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: iac/terraform
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform fmt -check -recursive
+      - run: terraform init -backend=false
+      - run: terraform validate
+
+  iac-security-scan:
+    name: IaC security scan (tfsec + checkov)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: tfsec
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          working_directory: iac/terraform
+          soft_fail: true # report findings without failing the build (demo)
+      - name: checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: iac/terraform
+          framework: terraform
+          soft_fail: true
+          quiet: true
+
+  image-build-scan:
+    name: Build & scan container image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t sis-app:ci ./app
+      - name: Trivy image scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: sis-app:ci
+          format: table
+          severity: HIGH,CRITICAL
+          exit-code: "0" # set to "1" to make HIGH/CRITICAL findings block the build
+
+  # ---------------------------------------------------------------------------
+  # Gated deploy (disabled by default). To enable:
+  #   1. Create an IAM role trusting GitHub OIDC and grant ECR push + ECS deploy.
+  #   2. Set repo variables: ENABLE_DEPLOY=true, AWS_REGION, AWS_ROLE_ARN,
+  #      ECR_REPOSITORY, ECS_CLUSTER, ECS_SERVICE.
+  # ---------------------------------------------------------------------------
+  deploy:
+    name: Deploy to AWS (gated)
+    needs: [php-lint, terraform, image-build-scan]
+    if: ${{ github.ref == 'refs/heads/main' && vars.ENABLE_DEPLOY == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # for OIDC
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure AWS credentials (OIDC, no long-lived keys)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Login to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Build, tag and push image
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          REPO: ${{ vars.ECR_REPOSITORY }}
+        run: |
+          docker build -t "$REGISTRY/$REPO:$GITHUB_SHA" -t "$REGISTRY/$REPO:latest" ./app
+          docker push "$REGISTRY/$REPO:$GITHUB_SHA"
+          docker push "$REGISTRY/$REPO:latest"
+      - name: Force new ECS deployment
+        run: |
+          aws ecs update-service --cluster "${{ vars.ECS_CLUSTER }}" \
+            --service "${{ vars.ECS_SERVICE }}" --force-new-deployment
