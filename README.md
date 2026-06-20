@@ -2,8 +2,6 @@
 
 > Secure re-platforming of a legacy LAMP monolith into a defense-in-depth AWS cloud architecture, implemented with Terraform (Infrastructure as Code), a containerized PHP application, a DevSecOps pipeline, and basic security validation.
 
----
-
 ## 1. Overview
 
 A legacy **Student Information System** runs as a monolithic LAMP application (Apache + PHP + a locally installed
@@ -25,8 +23,6 @@ migrates it to a secure, highly-available AWS architecture:
 | `iac/terraform/` | Modular Terraform for the whole AWS architecture |
 | `security-testing/` | Port-scan, WAF-bypass and encryption-verification scripts (Part E) |
 | `.github/workflows/` | DevSecOps CI pipeline (lint, IaC scan, image scan) |
-
----
 
 ## 3. Prerequisites & installation
 
@@ -101,8 +97,6 @@ aws sts get-caller-identity
 > **Security:** never commit access keys to git (the `.gitignore` already blocks `*.pem`/`.env`). Delete the access
 > key in the IAM console once you have finished the assignment.
 
----
-
 ## 4. Run locally (Docker Compose)
 
 The fastest way to see the application — only Docker is required:
@@ -114,8 +108,6 @@ docker compose up --build
 ```
 
 This starts the PHP app + a seeded MySQL database. Stop it with `docker compose down`.
-
----
 
 ## 5. Deploy to AWS — deployment & evidence-capture runbook
 
