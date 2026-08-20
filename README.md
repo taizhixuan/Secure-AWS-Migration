@@ -1,4 +1,4 @@
-# Assignment 2 — Secure Migration of a Traditional Application to AWS
+# Secure Migration of a Traditional Application to AWS
 
 > Secure re-platforming of a legacy LAMP monolith into a defense-in-depth AWS cloud architecture, implemented with Terraform (Infrastructure as Code), a containerized PHP application, a DevSecOps pipeline, and basic security validation.
 
